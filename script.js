@@ -306,6 +306,8 @@ const gamePlay = function () {
 
 gamePlay();
 
+console.log("Test 2");
+
 /////////////////Chess testing classes
 /*
 class PieceCl {
