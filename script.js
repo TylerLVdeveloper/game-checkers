@@ -306,8 +306,6 @@ const gamePlay = function () {
 
 gamePlay();
 
-console.log("Test 2");
-
 /////////////////Chess testing classes
 /*
 class PieceCl {
@@ -333,5 +331,3 @@ testPiece.movePosition("testing 1 2 3");
 
 testArray.forEach((cur) => console.log(cur.assignedPlayer));
 */
-
-// Testing Branch
