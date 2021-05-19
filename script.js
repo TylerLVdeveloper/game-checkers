@@ -1,3 +1,48 @@
+class PieceCl {
+  constructor(startingPosition, assignedPlayer) {
+    this.startingPosition = startingPosition;
+    this.currentPosition = startingPosition;
+    this.assignedPlayer = assignedPlayer;
+    this.captured = false;
+  }
+
+  movePosition(newPosition) {
+    console.log(newPosition);
+  }
+}
+
+const playerPiece1 = new PieceCl("1-2", "player1");
+const playerPiece2 = new PieceCl("1-4", "player1");
+const playerPiece3 = new PieceCl("1-6", "player1");
+const playerPiece4 = new PieceCl("1-8", "player1");
+const playerPiece5 = new PieceCl("2-1", "player1");
+const playerPiece6 = new PieceCl("2-3", "player1");
+const playerPiece7 = new PieceCl("2-5", "player1");
+const playerPiece8 = new PieceCl("2-7", "player1");
+const playerPiece9 = new PieceCl("3-2", "player1");
+const playerPiece10 = new PieceCl("3-4", "player1");
+const playerPiece11 = new PieceCl("3-6", "player1");
+const playerPiece12 = new PieceCl("3-8", "player1");
+const playerPiecesArray = [
+  playerPiece1,
+  playerPiece2,
+  playerPiece3,
+  playerPiece4,
+  playerPiece5,
+  playerPiece6,
+  playerPiece7,
+  playerPiece8,
+  playerPiece9,
+  playerPiece10,
+  playerPiece11,
+  playerPiece12,
+];
+
+console.log(playerPiecesArray);
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 let potentialMove = null;
 let potentialMove2 = null;
 let takeOpponentPiece,
@@ -305,29 +350,3 @@ const gamePlay = function () {
 };
 
 gamePlay();
-
-/////////////////Chess testing classes
-/*
-class PieceCl {
-  constructor(startingPosition, assignedPlayer) {
-    this.startingPosition = startingPosition;
-    this.currentPosition = startingPosition;
-    this.assignedPlayer = assignedPlayer;
-    this.captured = false;
-  }
-
-  movePosition(newPosition) {
-    console.log(newPosition);
-  }
-}
-
-const testPiece = new PieceCl(14, "testPlayer");
-const testArray = [];
-testArray.push(testPiece);
-
-console.log(testArray);
-
-testPiece.movePosition("testing 1 2 3");
-
-testArray.forEach((cur) => console.log(cur.assignedPlayer));
-*/
