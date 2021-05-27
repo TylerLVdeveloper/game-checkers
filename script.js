@@ -4,6 +4,10 @@ class PieceCl {
     this.currentPosition = startingPosition;
     this.assignedPlayer = assignedPlayer;
     this.captured = false;
+    this.kingMe = false;
+    assignedPlayer === "player1"
+      ? (this.enemyPlayer = "player2")
+      : (this.enemyPlayer = "player1");
   }
 
   movePosition(newPosition) {
