@@ -11,6 +11,7 @@ class PieceCl {
   }
 }
 
+// Player 1 Pieces
 const playerPiece1 = new PieceCl("1-2", "player1");
 const playerPiece2 = new PieceCl("1-4", "player1");
 const playerPiece3 = new PieceCl("1-6", "player1");
@@ -23,6 +24,22 @@ const playerPiece9 = new PieceCl("3-2", "player1");
 const playerPiece10 = new PieceCl("3-4", "player1");
 const playerPiece11 = new PieceCl("3-6", "player1");
 const playerPiece12 = new PieceCl("3-8", "player1");
+
+// Player 2 Pieces
+const playerPiece13 = new PieceCl("8-1", "player2");
+const playerPiece14 = new PieceCl("8-3", "player2");
+const playerPiece15 = new PieceCl("8-5", "player2");
+const playerPiece16 = new PieceCl("8-7", "player2");
+const playerPiece17 = new PieceCl("7-2", "player2");
+const playerPiece18 = new PieceCl("7-4", "player2");
+const playerPiece19 = new PieceCl("7-6", "player2");
+const playerPiece20 = new PieceCl("7-8", "player2");
+const playerPiece21 = new PieceCl("6-1", "player2");
+const playerPiece22 = new PieceCl("6-3", "player2");
+const playerPiece23 = new PieceCl("6-5", "player2");
+const playerPiece24 = new PieceCl("6-7", "player2");
+
+// All Pieces Array
 const playerPiecesArray = [
   playerPiece1,
   playerPiece2,
@@ -36,6 +53,18 @@ const playerPiecesArray = [
   playerPiece10,
   playerPiece11,
   playerPiece12,
+  playerPiece13,
+  playerPiece14,
+  playerPiece15,
+  playerPiece16,
+  playerPiece17,
+  playerPiece18,
+  playerPiece19,
+  playerPiece20,
+  playerPiece21,
+  playerPiece22,
+  playerPiece23,
+  playerPiece24,
 ];
 
 console.log(playerPiecesArray);
