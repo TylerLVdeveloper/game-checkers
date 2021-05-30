@@ -5,47 +5,64 @@ class PieceCl {
     this.assignedPlayer = assignedPlayer;
     this.captured = false;
     this.kingMe = false;
-    assignedPlayer === "player1"
-      ? (this.enemyPlayer = "player2")
-      : (this.enemyPlayer = "player1");
-
-    assignedPlayer === "player1"
-      ? (this.pieceImg = "X")
-      : (this.pieceImg = "O");
   }
 
-  movePosition(newPosition) {
-    console.log(newPosition);
+  kingMeIdentifyMoveSpaces() {
+    console.log("test");
+  }
+}
+
+class Player1Cl extends PieceCl {
+  constructor(startingPosition, assignedPlayer) {
+    super(startingPosition, assignedPlayer);
+    this.enemyPlayer = "player2";
+    this.pieceImg = "X";
+  }
+
+  identifyMoveSpaces() {
+    console.log("test");
+  }
+}
+
+class Player2Cl extends PieceCl {
+  constructor(startingPosition, assignedPlayer) {
+    super(startingPosition, assignedPlayer);
+    this.enemyPlayer = "player1";
+    this.pieceImg = "O";
+  }
+
+  identifyMoveSpaces() {
+    console.log("test");
   }
 }
 
 // Player 1 Pieces
-const playerPiece1 = new PieceCl("1-2", "player1");
-const playerPiece2 = new PieceCl("1-4", "player1");
-const playerPiece3 = new PieceCl("1-6", "player1");
-const playerPiece4 = new PieceCl("1-8", "player1");
-const playerPiece5 = new PieceCl("2-1", "player1");
-const playerPiece6 = new PieceCl("2-3", "player1");
-const playerPiece7 = new PieceCl("2-5", "player1");
-const playerPiece8 = new PieceCl("2-7", "player1");
-const playerPiece9 = new PieceCl("3-2", "player1");
-const playerPiece10 = new PieceCl("3-4", "player1");
-const playerPiece11 = new PieceCl("3-6", "player1");
-const playerPiece12 = new PieceCl("3-8", "player1");
+const playerPiece1 = new Player1Cl("1-2", "player1");
+const playerPiece2 = new Player1Cl("1-4", "player1");
+const playerPiece3 = new Player1Cl("1-6", "player1");
+const playerPiece4 = new Player1Cl("1-8", "player1");
+const playerPiece5 = new Player1Cl("2-1", "player1");
+const playerPiece6 = new Player1Cl("2-3", "player1");
+const playerPiece7 = new Player1Cl("2-5", "player1");
+const playerPiece8 = new Player1Cl("2-7", "player1");
+const playerPiece9 = new Player1Cl("3-2", "player1");
+const playerPiece10 = new Player1Cl("3-4", "player1");
+const playerPiece11 = new Player1Cl("3-6", "player1");
+const playerPiece12 = new Player1Cl("3-8", "player1");
 
 // Player 2 Pieces
-const playerPiece13 = new PieceCl("8-1", "player2");
-const playerPiece14 = new PieceCl("8-3", "player2");
-const playerPiece15 = new PieceCl("8-5", "player2");
-const playerPiece16 = new PieceCl("8-7", "player2");
-const playerPiece17 = new PieceCl("7-2", "player2");
-const playerPiece18 = new PieceCl("7-4", "player2");
-const playerPiece19 = new PieceCl("7-6", "player2");
-const playerPiece20 = new PieceCl("7-8", "player2");
-const playerPiece21 = new PieceCl("6-1", "player2");
-const playerPiece22 = new PieceCl("6-3", "player2");
-const playerPiece23 = new PieceCl("6-5", "player2");
-const playerPiece24 = new PieceCl("6-7", "player2");
+const playerPiece13 = new Player2Cl("8-1", "player2");
+const playerPiece14 = new Player2Cl("8-3", "player2");
+const playerPiece15 = new Player2Cl("8-5", "player2");
+const playerPiece16 = new Player2Cl("8-7", "player2");
+const playerPiece17 = new Player2Cl("7-2", "player2");
+const playerPiece18 = new Player2Cl("7-4", "player2");
+const playerPiece19 = new Player2Cl("7-6", "player2");
+const playerPiece20 = new Player2Cl("7-8", "player2");
+const playerPiece21 = new Player2Cl("6-1", "player2");
+const playerPiece22 = new Player2Cl("6-3", "player2");
+const playerPiece23 = new Player2Cl("6-5", "player2");
+const playerPiece24 = new Player2Cl("6-7", "player2");
 
 // All Pieces Array
 const playerPiecesArray = [
@@ -80,13 +97,14 @@ console.log(playerPiecesArray);
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-let potentialMoveId, potentialMove2Id;
 let potentialMove = null;
 let potentialMove2 = null;
 let takeOpponentPiece,
   takeOpponentPiece2,
   opponentPieceJumped,
-  opponentPieceJumped2;
+  opponentPieceJumped2,
+  potentialMoveId,
+  potentialMove2Id;
 const turnIndicator =
   document.querySelector("#turn_indicator").firstElementChild;
 const playerOneIndicator = "O";
@@ -289,13 +307,12 @@ const gamePlayListener = function (event) {
     (piece) => piece.currentPosition === pieceSelected.id
   );
 
-  console.log(identifiedPiece);
-
   //////////////////////////////////////////////Calculate move spaces
-  if (activePlayer === "player2") {
-    enemyPlayer = "player1";
+  if (activePlayer === "player1") {
+    enemyPlayer = "player2";
 
-    if (pieceSelected.classList.contains(activePlayer)) {
+    // if (pieceSelected.classList.contains(activePlayer))
+    if (identifiedPiece.assignedPlayer === activePlayer) {
       // Take ID of piece selected and split up into two numbers (Row & Collumn)
       idCopy = pieceSelected.id.slice().split("");
 
@@ -322,10 +339,11 @@ const gamePlayListener = function (event) {
     }
     ///////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////
-  } else if (activePlayer === "player1") {
-    enemyPlayer = "player2";
+  } else if (activePlayer === "player2") {
+    enemyPlayer = "player1";
 
-    if (pieceSelected.classList.contains(activePlayer)) {
+    // if (pieceSelected.classList.contains(activePlayer))
+    if (identifiedPiece.assignedPlayer === activePlayer) {
       // Take ID of piece selected and split up into two numbers (Row & Collumn)
       idCopy = pieceSelected.id.slice().split("");
 
@@ -392,8 +410,6 @@ const gamePlayListener = function (event) {
     pieceSelected.style.border = "1px solid black";
     potentialMove.style.backgroundColor = "red";
 
-    // pieceSelected.classList.remove(activePlayer);
-
     // If there was a 2nd move option, change style back to original state
     if (potentialMove2) potentialMove2.style.backgroundColor = "red";
 
@@ -431,8 +447,6 @@ const gamePlayListener = function (event) {
     // Change styles back to original state
     pieceSelected.style.border = "1px solid black";
     potentialMove2.style.backgroundColor = "red";
-
-    // pieceSelected.classList.remove(activePlayer);
 
     // If there was a 2nd move option, change style back to original state
     if (potentialMove) potentialMove.style.backgroundColor = "red";
