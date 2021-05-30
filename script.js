@@ -7,7 +7,9 @@ let takeOpponentPiece,
   potentialMoveId,
   potentialMove2Id,
   moveSpaceId,
-  moveSpace2Id;
+  moveSpace2Id,
+  identifiedPiece,
+  pieceSelected;
 let idCopy = null;
 let moveSpace = null;
 let moveSpace2 = null;
@@ -87,6 +89,66 @@ class PieceCl {
       takeOpponentPiece2 = true;
       opponentPieceJumped2 = moveSpace2;
     }
+  }
+
+  moveToSpace() {
+    // Change piece's current position to new position
+    identifiedPiece.currentPosition = potentialMoveId;
+
+    // Move Piece image to new position
+    potentialMove.textContent = identifiedPiece.pieceImg;
+
+    // Remove piece image from previous location
+    pieceSelected.textContent = "";
+
+    // Change styles back to original state
+    pieceSelected.style.border = "1px solid black";
+    potentialMove.style.backgroundColor = "red";
+
+    // If there was a 2nd move option, change style back to original state
+    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
+
+    if (takeOpponentPiece) removeEnemyPiece(enemyPlayer);
+
+    // Remove event listeners from both move options
+    potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
+    potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
+
+    // Switch active player - NEXT PLAYER'S TURN
+    activePlayer = identifiedPiece.enemyPlayer;
+
+    // Check for winner (does either player have no more game pieces?)
+    checkForWinner();
+  }
+
+  moveToSpace2() {
+    // Change piece's current position to new position
+    identifiedPiece.currentPosition = potentialMove2Id;
+
+    // Move Piece image to new position
+    potentialMove2.textContent = identifiedPiece.pieceImg;
+
+    // Remove piece image from previous location
+    pieceSelected.textContent = "";
+
+    // Change styles back to original state
+    pieceSelected.style.border = "1px solid black";
+    potentialMove2.style.backgroundColor = "red";
+
+    // If there was a 2nd move option, change style back to original state
+    if (potentialMove) potentialMove.style.backgroundColor = "red";
+
+    if (takeOpponentPiece2) removeEnemyPiece2(enemyPlayer);
+
+    // Remove event listeners from both move options
+    potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
+    potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
+
+    // Switch active player - NEXT PLAYER'S TURN
+    activePlayer = identifiedPiece.enemyPlayer;
+
+    // Check for winner (does either player have no more game pieces?)
+    checkForWinner();
   }
 }
 
@@ -269,11 +331,9 @@ const starterSpaces = document.querySelectorAll(".starter_space");
 starterSpaces.forEach((space) => {
   const idCopy = space.id.slice().split("");
   if (+idCopy[0] >= 6) {
-    space.classList.add("player1");
-    space.textContent = playerOneIndicator;
+    space.textContent = playerPiece24.pieceImg;
   } else if (+idCopy[0] <= 3) {
-    space.classList.add("player2");
-    space.textContent = playerTwoIndicator;
+    space.textContent = playerPiece1.pieceImg;
   }
 });
 
@@ -332,16 +392,16 @@ const gamePlayListener = function (event) {
   turnIndicator.textContent = `${activePlayer} Go!`;
 
   // Store piece selected into variable
-  const pieceSelected = event.target;
+  pieceSelected = event.target;
   console.log(pieceSelected);
 
   // Use position selected on board to located piece assigned to that location ID
-  const identifiedPiece = playerPiecesArray.find(
+  identifiedPiece = playerPiecesArray.find(
     (piece) => piece.currentPosition === pieceSelected.id
   );
 
   //Identify move spaces
-  if (identifiedPiece.assignedPlayer === activePlayer) {
+  if (identifiedPiece?.assignedPlayer === activePlayer) {
     identifiedPiece.identifyMoveSpaces(pieceSelected);
   }
 
@@ -360,75 +420,10 @@ const gamePlayListener = function (event) {
 
   if (potentialMove2) potentialMove2.style.backgroundColor = "yellow";
 
-  ///////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////
-  const moveToSpace = () => {
-    // Change piece's current position to new position
-    identifiedPiece.currentPosition = potentialMoveId;
+  // Event Listeners for moving spaces
+  potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
 
-    // Move Piece image to new position
-    potentialMove.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
-
-    // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove.style.backgroundColor = "red";
-
-    // If there was a 2nd move option, change style back to original state
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-
-    if (takeOpponentPiece) removeEnemyPiece(enemyPlayer);
-
-    // Remove event listeners from both move options
-    potentialMove?.removeEventListener("click", moveToSpace);
-    potentialMove2?.removeEventListener("click", moveToSpace2);
-
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
-  };
-
-  // EVENT LISTENER SHOWN ABOVE
-  potentialMove?.addEventListener("click", moveToSpace);
-  ///////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////////////////
-  const moveToSpace2 = () => {
-    // Change piece's current position to new position
-    identifiedPiece.currentPosition = potentialMove2Id;
-
-    // Move Piece image to new position
-    potentialMove2.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
-
-    // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove2.style.backgroundColor = "red";
-
-    // If there was a 2nd move option, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-
-    if (takeOpponentPiece2) removeEnemyPiece2(enemyPlayer);
-
-    // Remove event listeners from both move options
-    potentialMove?.removeEventListener("click", moveToSpace);
-    potentialMove2?.removeEventListener("click", moveToSpace2);
-
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
-  };
-  potentialMove2?.addEventListener("click", moveToSpace2);
+  potentialMove2?.addEventListener("click", identifiedPiece.moveToSpace2);
   ///////////////////////////////////////////////////////////////////////////////////////
   board.removeEventListener("click", gamePlayListener);
 };
