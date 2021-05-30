@@ -1,3 +1,41 @@
+let potentialMove = null;
+let potentialMove2 = null;
+let takeOpponentPiece,
+  takeOpponentPiece2,
+  opponentPieceJumped,
+  opponentPieceJumped2,
+  potentialMoveId,
+  potentialMove2Id,
+  moveSpaceId,
+  moveSpace2Id;
+let idCopy = null;
+let moveSpace = null;
+let moveSpace2 = null;
+let moveSpaceNextRow = null;
+let moveSpace2NextRow = null;
+
+const resetGlobalData = function () {
+  potentialMove = null;
+  potentialMove2 = null;
+  takeOpponentPiece = false;
+  takeOpponentPiece2 = false;
+  opponentPieceJumped = null;
+  opponentPieceJumped2 = null;
+  potentialMoveId = "";
+  potentialMove2Id = "";
+  moveSpaceId = "";
+  moveSpace2Id = "";
+  idCopy = null;
+  moveSpace = null;
+  moveSpace2 = null;
+  moveSpaceNextRow = null;
+  moveSpace2NextRow = null;
+};
+
+////////////////////////////////////////
+////////////////////////////////////////
+////////////////////////////////////////
+
 class PieceCl {
   constructor(startingPosition, assignedPlayer) {
     this.startingPosition = startingPosition;
@@ -10,6 +48,46 @@ class PieceCl {
   kingMeIdentifyMoveSpaces() {
     console.log("test");
   }
+
+  calcMoveSpace() {
+    if (
+      // Check move space for matching ID to any player pieces
+      !playerPiecesArray.some((piece) => piece.currentPosition === moveSpaceId)
+    ) {
+      potentialMoveId = moveSpaceId;
+      potentialMove = moveSpace;
+      takeOpponentPiece = false;
+    } else if (
+      !moveSpace.classList.contains(activePlayer) &&
+      moveSpace.classList.contains(this.enemyPlayer) &&
+      !moveSpaceNextRow?.classList.contains(activePlayer) &&
+      !moveSpaceNextRow?.classList.contains(this.enemyPlayer)
+    ) {
+      potentialMove = moveSpaceNextRow;
+      takeOpponentPiece = true;
+      opponentPieceJumped = moveSpace;
+    }
+  }
+
+  calcMoveSpace2() {
+    if (
+      // Check move space for matching ID to any player pieces
+      !playerPiecesArray.some((piece) => piece.currentPosition === moveSpace2Id)
+    ) {
+      potentialMove2Id = moveSpace2Id;
+      potentialMove2 = moveSpace2;
+      takeOpponentPiece2 = false;
+    } else if (
+      !moveSpace2.classList.contains(activePlayer) &&
+      moveSpace2.classList.contains(enemyPlayer) &&
+      !moveSpace2NextRow?.classList.contains(activePlayer) &&
+      !moveSpace2NextRow?.classList.contains(enemyPlayer)
+    ) {
+      potentialMove2 = moveSpace2NextRow;
+      takeOpponentPiece2 = true;
+      opponentPieceJumped2 = moveSpace2;
+    }
+  }
 }
 
 class Player1Cl extends PieceCl {
@@ -19,8 +97,26 @@ class Player1Cl extends PieceCl {
     this.pieceImg = "X";
   }
 
-  identifyMoveSpaces() {
-    console.log("test");
+  identifyMoveSpaces(pieceSelected) {
+    // Take ID of piece selected and split up into two numbers (Row & Collumn)
+    idCopy = pieceSelected.id.slice().split("");
+
+    // 1 Row up Spaces - Normal Move
+    moveSpaceId = `${+idCopy[0] + 1}-${+idCopy[2] - 1}`;
+    moveSpace = document.getElementById(`${+idCopy[0] + 1}-${+idCopy[2] - 1}`);
+
+    moveSpace2Id = `${+idCopy[0] + 1}-${+idCopy[2] + 1}`;
+    moveSpace2 = document.getElementById(`${+idCopy[0] + 1}-${+idCopy[2] + 1}`);
+
+    ///////////////////////////////////////////////////////////////
+
+    // 2 Rows up Spaces - JUMPING OPPONENT PIECE
+    moveSpaceNextRow = document.getElementById(
+      `${+idCopy[0] + 2}-${+idCopy[2] - 2}`
+    );
+    moveSpace2NextRow = document.getElementById(
+      `${+idCopy[0] + 2}-${+idCopy[2] + 2}`
+    );
   }
 }
 
@@ -31,8 +127,26 @@ class Player2Cl extends PieceCl {
     this.pieceImg = "O";
   }
 
-  identifyMoveSpaces() {
-    console.log("test");
+  identifyMoveSpaces(pieceSelected) {
+    // Take ID of piece selected and split up into two numbers (Row & Collumn)
+    idCopy = pieceSelected.id.slice().split("");
+
+    // 1 Row up Spaces - Normal Move
+    moveSpaceId = `${+idCopy[0] - 1}-${+idCopy[2] - 1}`;
+    moveSpace = document.getElementById(`${+idCopy[0] - 1}-${+idCopy[2] - 1}`);
+
+    moveSpace2Id = `${+idCopy[0] - 1}-${+idCopy[2] + 1}`;
+    moveSpace2 = document.getElementById(`${+idCopy[0] - 1}-${+idCopy[2] + 1}`);
+
+    ///////////////////////////////////////////////////////////////
+
+    // 2 Rows up Spaces - JUMPING OPPONENT PIECE
+    moveSpaceNextRow = document.getElementById(
+      `${+idCopy[0] - 2}-${+idCopy[2] - 2}`
+    );
+    moveSpace2NextRow = document.getElementById(
+      `${+idCopy[0] - 2}-${+idCopy[2] + 2}`
+    );
   }
 }
 
@@ -97,14 +211,6 @@ console.log(playerPiecesArray);
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-let potentialMove = null;
-let potentialMove2 = null;
-let takeOpponentPiece,
-  takeOpponentPiece2,
-  opponentPieceJumped,
-  opponentPieceJumped2,
-  potentialMoveId,
-  potentialMove2Id;
 const turnIndicator =
   document.querySelector("#turn_indicator").firstElementChild;
 const playerOneIndicator = "O";
@@ -185,73 +291,6 @@ const board = document.getElementById("board");
 // Game Play Functions
 /////////////////////////////////////////////////////////
 
-const resetGlobalData = function () {
-  potentialMoveId = "";
-  potentialMove2Id = "";
-  potentialMove = null;
-  potentialMove2 = null;
-  takeOpponentPiece = false;
-  takeOpponentPiece2 = false;
-  opponentPieceJumped = null;
-  opponentPieceJumped2 = null;
-};
-
-const calcMoveSpace = function (
-  enemyPlayer,
-  moveSpaceId,
-  moveSpace,
-  moveSpaceNextRow
-) {
-  if (
-    // Check move space for matching ID to any player pieces
-    !playerPiecesArray.some((piece) => piece.currentPosition === moveSpaceId)
-
-    // !moveSpace.classList.contains(activePlayer) &&
-    // !moveSpace.classList.contains(enemyPlayer)
-  ) {
-    potentialMoveId = moveSpaceId;
-    potentialMove = moveSpace;
-    takeOpponentPiece = false;
-  } else if (
-    !moveSpace.classList.contains(activePlayer) &&
-    moveSpace.classList.contains(enemyPlayer) &&
-    !moveSpaceNextRow?.classList.contains(activePlayer) &&
-    !moveSpaceNextRow?.classList.contains(enemyPlayer)
-  ) {
-    potentialMove = moveSpaceNextRow;
-    takeOpponentPiece = true;
-    opponentPieceJumped = moveSpace;
-  }
-};
-
-const calcMoveSpace2 = function (
-  enemyPlayer,
-  moveSpace2Id,
-  moveSpace2,
-  moveSpace2NextRow
-) {
-  if (
-    // Check move space for matching ID to any player pieces
-    !playerPiecesArray.some((piece) => piece.currentPosition === moveSpace2Id)
-
-    // !moveSpace2.classList.contains(activePlayer) &&
-    // !moveSpace2.classList.contains(enemyPlayer)
-  ) {
-    potentialMove2Id = moveSpace2Id;
-    potentialMove2 = moveSpace2;
-    takeOpponentPiece2 = false;
-  } else if (
-    !moveSpace2.classList.contains(activePlayer) &&
-    moveSpace2.classList.contains(enemyPlayer) &&
-    !moveSpace2NextRow?.classList.contains(activePlayer) &&
-    !moveSpace2NextRow?.classList.contains(enemyPlayer)
-  ) {
-    potentialMove2 = moveSpace2NextRow;
-    takeOpponentPiece2 = true;
-    opponentPieceJumped2 = moveSpace2;
-  }
-};
-
 const removeEnemyPiece = function (enemyPlayer) {
   opponentPieceJumped.textContent = "";
   opponentPieceJumped.classList.remove(enemyPlayer);
@@ -286,12 +325,6 @@ const checkForWinner = () => {
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 const gamePlayListener = function (event) {
-  let idCopy = null;
-  let moveSpaceId, moveSpace2Id;
-  let moveSpace = null;
-  let moveSpace2 = null;
-  let moveSpaceNextRow = null;
-  let moveSpace2NextRow = null;
   // Reset Global Variables
   resetGlobalData();
 
@@ -307,78 +340,14 @@ const gamePlayListener = function (event) {
     (piece) => piece.currentPosition === pieceSelected.id
   );
 
-  //////////////////////////////////////////////Calculate move spaces
-  if (activePlayer === "player1") {
-    enemyPlayer = "player2";
-
-    // if (pieceSelected.classList.contains(activePlayer))
-    if (identifiedPiece.assignedPlayer === activePlayer) {
-      // Take ID of piece selected and split up into two numbers (Row & Collumn)
-      idCopy = pieceSelected.id.slice().split("");
-
-      // 1 Row up Spaces - Normal Move
-      moveSpaceId = `${+idCopy[0] + 1}-${+idCopy[2] - 1}`;
-      moveSpace = document.getElementById(
-        `${+idCopy[0] + 1}-${+idCopy[2] - 1}`
-      );
-
-      moveSpace2Id = `${+idCopy[0] + 1}-${+idCopy[2] + 1}`;
-      moveSpace2 = document.getElementById(
-        `${+idCopy[0] + 1}-${+idCopy[2] + 1}`
-      );
-
-      ///////////////////////////////////////////////////////////////
-
-      // 2 Rows up Spaces - JUMPING OPPONENT PIECE
-      moveSpaceNextRow = document.getElementById(
-        `${+idCopy[0] + 2}-${+idCopy[2] - 2}`
-      );
-      moveSpace2NextRow = document.getElementById(
-        `${+idCopy[0] + 2}-${+idCopy[2] + 2}`
-      );
-    }
-    ///////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////
-  } else if (activePlayer === "player2") {
-    enemyPlayer = "player1";
-
-    // if (pieceSelected.classList.contains(activePlayer))
-    if (identifiedPiece.assignedPlayer === activePlayer) {
-      // Take ID of piece selected and split up into two numbers (Row & Collumn)
-      idCopy = pieceSelected.id.slice().split("");
-
-      // 1 Row up Spaces - Normal Move
-      moveSpaceId = `${+idCopy[0] - 1}-${+idCopy[2] - 1}`;
-      moveSpace = document.getElementById(
-        `${+idCopy[0] - 1}-${+idCopy[2] - 1}`
-      );
-
-      moveSpace2Id = `${+idCopy[0] - 1}-${+idCopy[2] + 1}`;
-      moveSpace2 = document.getElementById(
-        `${+idCopy[0] - 1}-${+idCopy[2] + 1}`
-      );
-
-      ///////////////////////////////////////////////////////////////
-
-      // 2 Rows up Spaces - JUMPING OPPONENT PIECE
-      moveSpaceNextRow = document.getElementById(
-        `${+idCopy[0] - 2}-${+idCopy[2] - 2}`
-      );
-      moveSpace2NextRow = document.getElementById(
-        `${+idCopy[0] - 2}-${+idCopy[2] + 2}`
-      );
-    }
+  //Identify move spaces
+  if (identifiedPiece.assignedPlayer === activePlayer) {
+    identifiedPiece.identifyMoveSpaces(pieceSelected);
   }
-  ///////////////////////////////////////////////////////////////
-  ///////////////////////////////////////////////////////////////
 
   // Calculate Move Spaces
-  if (moveSpace) {
-    calcMoveSpace(enemyPlayer, moveSpaceId, moveSpace, moveSpaceNextRow);
-  }
-
-  if (moveSpace2)
-    calcMoveSpace2(enemyPlayer, moveSpace2Id, moveSpace2, moveSpace2NextRow);
+  if (moveSpace) identifiedPiece.calcMoveSpace();
+  if (moveSpace2) identifiedPiece.calcMoveSpace2();
 
   // If there's atleast one possible move, continue...if not, player can redo selection
   if (potentialMove || potentialMove2) {
@@ -394,14 +363,12 @@ const gamePlayListener = function (event) {
   ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////
-  const potentialListener = () => {
+  const moveToSpace = () => {
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMoveId;
 
     // Move Piece image to new position
     potentialMove.textContent = identifiedPiece.pieceImg;
-
-    // potentialMove.classList.add(activePlayer);
 
     // Remove piece image from previous location
     pieceSelected.textContent = "";
@@ -416,30 +383,28 @@ const gamePlayListener = function (event) {
     if (takeOpponentPiece) removeEnemyPiece(enemyPlayer);
 
     // Remove event listeners from both move options
-    potentialMove?.removeEventListener("click", potentialListener);
-    potentialMove2?.removeEventListener("click", potentialListener2);
+    potentialMove?.removeEventListener("click", moveToSpace);
+    potentialMove2?.removeEventListener("click", moveToSpace2);
 
     // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = enemyPlayer;
+    activePlayer = identifiedPiece.enemyPlayer;
 
     // Check for winner (does either player have no more game pieces?)
     checkForWinner();
   };
 
   // EVENT LISTENER SHOWN ABOVE
-  potentialMove?.addEventListener("click", potentialListener);
+  potentialMove?.addEventListener("click", moveToSpace);
   ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////
-  const potentialListener2 = () => {
+  const moveToSpace2 = () => {
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMove2Id;
 
     // Move Piece image to new position
     potentialMove2.textContent = identifiedPiece.pieceImg;
-
-    // potentialMove2.classList.add(activePlayer);
 
     // Remove piece image from previous location
     pieceSelected.textContent = "";
@@ -454,16 +419,16 @@ const gamePlayListener = function (event) {
     if (takeOpponentPiece2) removeEnemyPiece2(enemyPlayer);
 
     // Remove event listeners from both move options
-    potentialMove?.removeEventListener("click", potentialListener);
-    potentialMove2?.removeEventListener("click", potentialListener2);
+    potentialMove?.removeEventListener("click", moveToSpace);
+    potentialMove2?.removeEventListener("click", moveToSpace2);
 
     // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = enemyPlayer;
+    activePlayer = identifiedPiece.enemyPlayer;
 
     // Check for winner (does either player have no more game pieces?)
     checkForWinner();
   };
-  potentialMove2?.addEventListener("click", potentialListener2);
+  potentialMove2?.addEventListener("click", moveToSpace2);
   ///////////////////////////////////////////////////////////////////////////////////////
   board.removeEventListener("click", gamePlayListener);
 };
