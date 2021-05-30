@@ -8,6 +8,10 @@ class PieceCl {
     assignedPlayer === "player1"
       ? (this.enemyPlayer = "player2")
       : (this.enemyPlayer = "player1");
+
+    assignedPlayer === "player1"
+      ? (this.pieceImg = "X")
+      : (this.pieceImg = "O");
   }
 
   movePosition(newPosition) {
@@ -76,6 +80,7 @@ console.log(playerPiecesArray);
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
+let potentialMoveId, potentialMove2Id;
 let potentialMove = null;
 let potentialMove2 = null;
 let takeOpponentPiece,
@@ -84,8 +89,8 @@ let takeOpponentPiece,
   opponentPieceJumped2;
 const turnIndicator =
   document.querySelector("#turn_indicator").firstElementChild;
-const playerOneIndicator = "X";
-const playerTwoIndicator = "O";
+const playerOneIndicator = "O";
+const playerTwoIndicator = "X";
 let player1Score = 12;
 let player2Score = 12;
 
@@ -163,6 +168,8 @@ const board = document.getElementById("board");
 /////////////////////////////////////////////////////////
 
 const resetGlobalData = function () {
+  potentialMoveId = "";
+  potentialMove2Id = "";
   potentialMove = null;
   potentialMove2 = null;
   takeOpponentPiece = false;
@@ -171,11 +178,20 @@ const resetGlobalData = function () {
   opponentPieceJumped2 = null;
 };
 
-const calcMoveSpace = function (enemyPlayer, moveSpace, moveSpaceNextRow) {
+const calcMoveSpace = function (
+  enemyPlayer,
+  moveSpaceId,
+  moveSpace,
+  moveSpaceNextRow
+) {
   if (
-    !moveSpace.classList.contains(activePlayer) &&
-    !moveSpace.classList.contains(enemyPlayer)
+    // Check move space for matching ID to any player pieces
+    !playerPiecesArray.some((piece) => piece.currentPosition === moveSpaceId)
+
+    // !moveSpace.classList.contains(activePlayer) &&
+    // !moveSpace.classList.contains(enemyPlayer)
   ) {
+    potentialMoveId = moveSpaceId;
     potentialMove = moveSpace;
     takeOpponentPiece = false;
   } else if (
@@ -190,11 +206,20 @@ const calcMoveSpace = function (enemyPlayer, moveSpace, moveSpaceNextRow) {
   }
 };
 
-const calcMoveSpace2 = function (enemyPlayer, moveSpace2, moveSpace2NextRow) {
+const calcMoveSpace2 = function (
+  enemyPlayer,
+  moveSpace2Id,
+  moveSpace2,
+  moveSpace2NextRow
+) {
   if (
-    !moveSpace2.classList.contains(activePlayer) &&
-    !moveSpace2.classList.contains(enemyPlayer)
+    // Check move space for matching ID to any player pieces
+    !playerPiecesArray.some((piece) => piece.currentPosition === moveSpace2Id)
+
+    // !moveSpace2.classList.contains(activePlayer) &&
+    // !moveSpace2.classList.contains(enemyPlayer)
   ) {
+    potentialMove2Id = moveSpace2Id;
     potentialMove2 = moveSpace2;
     takeOpponentPiece2 = false;
   } else if (
@@ -227,12 +252,24 @@ const removeEnemyPiece2 = function (enemyPlayer) {
   console.log(player1Score, player2Score);
 };
 
+const checkForWinner = () => {
+  if (player1Score < 1) {
+    turnIndicator.textContent = `Player 2 WINS!!!`;
+  } else if (player2Score < 1) {
+    turnIndicator.textContent = `Player 1 WINS!!!`;
+  } else {
+    // If no winner, CONTINUE GAME
+    gamePlay();
+  }
+};
+
 // Start Game
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 const gamePlayListener = function (event) {
   let idCopy = null;
+  let moveSpaceId, moveSpace2Id;
   let moveSpace = null;
   let moveSpace2 = null;
   let moveSpaceNextRow = null;
@@ -247,6 +284,13 @@ const gamePlayListener = function (event) {
   const pieceSelected = event.target;
   console.log(pieceSelected);
 
+  // Use position selected on board to located piece assigned to that location ID
+  const identifiedPiece = playerPiecesArray.find(
+    (piece) => piece.currentPosition === pieceSelected.id
+  );
+
+  console.log(identifiedPiece);
+
   //////////////////////////////////////////////Calculate move spaces
   if (activePlayer === "player2") {
     enemyPlayer = "player1";
@@ -256,12 +300,17 @@ const gamePlayListener = function (event) {
       idCopy = pieceSelected.id.slice().split("");
 
       // 1 Row up Spaces - Normal Move
+      moveSpaceId = `${+idCopy[0] + 1}-${+idCopy[2] - 1}`;
       moveSpace = document.getElementById(
         `${+idCopy[0] + 1}-${+idCopy[2] - 1}`
       );
+
+      moveSpace2Id = `${+idCopy[0] + 1}-${+idCopy[2] + 1}`;
       moveSpace2 = document.getElementById(
         `${+idCopy[0] + 1}-${+idCopy[2] + 1}`
       );
+
+      ///////////////////////////////////////////////////////////////
 
       // 2 Rows up Spaces - JUMPING OPPONENT PIECE
       moveSpaceNextRow = document.getElementById(
@@ -271,6 +320,8 @@ const gamePlayListener = function (event) {
         `${+idCopy[0] + 2}-${+idCopy[2] + 2}`
       );
     }
+    ///////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
   } else if (activePlayer === "player1") {
     enemyPlayer = "player2";
 
@@ -279,12 +330,17 @@ const gamePlayListener = function (event) {
       idCopy = pieceSelected.id.slice().split("");
 
       // 1 Row up Spaces - Normal Move
+      moveSpaceId = `${+idCopy[0] - 1}-${+idCopy[2] - 1}`;
       moveSpace = document.getElementById(
         `${+idCopy[0] - 1}-${+idCopy[2] - 1}`
       );
+
+      moveSpace2Id = `${+idCopy[0] - 1}-${+idCopy[2] + 1}`;
       moveSpace2 = document.getElementById(
         `${+idCopy[0] - 1}-${+idCopy[2] + 1}`
       );
+
+      ///////////////////////////////////////////////////////////////
 
       // 2 Rows up Spaces - JUMPING OPPONENT PIECE
       moveSpaceNextRow = document.getElementById(
@@ -295,10 +351,16 @@ const gamePlayListener = function (event) {
       );
     }
   }
+  ///////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////
 
   // Calculate Move Spaces
-  if (moveSpace) calcMoveSpace(enemyPlayer, moveSpace, moveSpaceNextRow);
-  if (moveSpace2) calcMoveSpace2(enemyPlayer, moveSpace2, moveSpace2NextRow);
+  if (moveSpace) {
+    calcMoveSpace(enemyPlayer, moveSpaceId, moveSpace, moveSpaceNextRow);
+  }
+
+  if (moveSpace2)
+    calcMoveSpace2(enemyPlayer, moveSpace2Id, moveSpace2, moveSpace2NextRow);
 
   // If there's atleast one possible move, continue...if not, player can redo selection
   if (potentialMove || potentialMove2) {
@@ -312,65 +374,80 @@ const gamePlayListener = function (event) {
   if (potentialMove2) potentialMove2.style.backgroundColor = "yellow";
 
   ///////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////
   const potentialListener = () => {
-    if (activePlayer === "player1")
-      potentialMove.textContent = playerOneIndicator;
-    if (activePlayer === "player2")
-      potentialMove.textContent = playerTwoIndicator;
-    potentialMove.classList.add(activePlayer);
-    pieceSelected.textContent = "";
-    pieceSelected.style.border = "1px solid black";
-    pieceSelected.classList.remove(activePlayer);
+    // Change piece's current position to new position
+    identifiedPiece.currentPosition = potentialMoveId;
 
+    // Move Piece image to new position
+    potentialMove.textContent = identifiedPiece.pieceImg;
+
+    // potentialMove.classList.add(activePlayer);
+
+    // Remove piece image from previous location
+    pieceSelected.textContent = "";
+
+    // Change styles back to original state
+    pieceSelected.style.border = "1px solid black";
     potentialMove.style.backgroundColor = "red";
 
+    // pieceSelected.classList.remove(activePlayer);
+
+    // If there was a 2nd move option, change style back to original state
     if (potentialMove2) potentialMove2.style.backgroundColor = "red";
 
     if (takeOpponentPiece) removeEnemyPiece(enemyPlayer);
 
+    // Remove event listeners from both move options
     potentialMove?.removeEventListener("click", potentialListener);
     potentialMove2?.removeEventListener("click", potentialListener2);
 
+    // Switch active player - NEXT PLAYER'S TURN
     activePlayer = enemyPlayer;
 
-    if (player1Score < 1) {
-      turnIndicator.textContent = `Player 2 WINS!!!`;
-    } else if (player2Score < 1) {
-      turnIndicator.textContent = `Player 1 WINS!!!`;
-    } else {
-      gamePlay();
-    }
+    // Check for winner (does either player have no more game pieces?)
+    checkForWinner();
   };
+
+  // EVENT LISTENER SHOWN ABOVE
   potentialMove?.addEventListener("click", potentialListener);
   ///////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////
   const potentialListener2 = () => {
-    if (activePlayer === "player1")
-      potentialMove2.textContent = playerOneIndicator;
-    if (activePlayer === "player2")
-      potentialMove2.textContent = playerTwoIndicator;
-    potentialMove2.classList.add(activePlayer);
-    pieceSelected.textContent = "";
-    pieceSelected.style.border = "1px solid black";
-    pieceSelected.classList.remove(activePlayer);
+    // Change piece's current position to new position
+    identifiedPiece.currentPosition = potentialMove2Id;
 
+    // Move Piece image to new position
+    potentialMove2.textContent = identifiedPiece.pieceImg;
+
+    // potentialMove2.classList.add(activePlayer);
+
+    // Remove piece image from previous location
+    pieceSelected.textContent = "";
+
+    // Change styles back to original state
+    pieceSelected.style.border = "1px solid black";
     potentialMove2.style.backgroundColor = "red";
 
+    // pieceSelected.classList.remove(activePlayer);
+
+    // If there was a 2nd move option, change style back to original state
     if (potentialMove) potentialMove.style.backgroundColor = "red";
 
     if (takeOpponentPiece2) removeEnemyPiece2(enemyPlayer);
 
+    // Remove event listeners from both move options
     potentialMove?.removeEventListener("click", potentialListener);
     potentialMove2?.removeEventListener("click", potentialListener2);
 
+    // Switch active player - NEXT PLAYER'S TURN
     activePlayer = enemyPlayer;
 
-    if (player1Score < 1) {
-      turnIndicator.textContent = `Player 2 WINS!!!`;
-    } else if (player2Score < 1) {
-      turnIndicator.textContent = `Player 1 WINS!!!`;
-    } else {
-      gamePlay();
-    }
+    // Check for winner (does either player have no more game pieces?)
+    checkForWinner();
   };
   potentialMove2?.addEventListener("click", potentialListener2);
   ///////////////////////////////////////////////////////////////////////////////////////
