@@ -9,12 +9,16 @@ let takeOpponentPiece,
   moveSpaceId,
   moveSpace2Id,
   identifiedPiece,
+  capturedPieceId,
+  capturedPiece2Id,
   pieceSelected;
 let idCopy = null;
 let moveSpace = null;
 let moveSpace2 = null;
 let moveSpaceNextRow = null;
 let moveSpace2NextRow = null;
+let moveSpaceNextRowId = null;
+let moveSpace2NextRowId = null;
 
 const resetGlobalData = function () {
   potentialMove = null;
@@ -32,6 +36,8 @@ const resetGlobalData = function () {
   moveSpace2 = null;
   moveSpaceNextRow = null;
   moveSpace2NextRow = null;
+  moveSpaceNextRowId = null;
+  moveSpace2NextRowId = null;
 };
 
 ////////////////////////////////////////
@@ -60,13 +66,20 @@ class PieceCl {
       potentialMove = moveSpace;
       takeOpponentPiece = false;
     } else if (
-      !moveSpace.classList.contains(activePlayer) &&
-      moveSpace.classList.contains(this.enemyPlayer) &&
-      !moveSpaceNextRow?.classList.contains(activePlayer) &&
-      !moveSpaceNextRow?.classList.contains(this.enemyPlayer)
+      playerPiecesArray.some((piece) => {
+        return (
+          piece.currentPosition === moveSpaceId &&
+          piece.assignedPlayer === identifiedPiece.enemyPlayer
+        );
+      }) &&
+      !playerPiecesArray.some(
+        (piece) => piece.currentPosition === moveSpaceNextRowId
+      )
     ) {
+      potentialMoveId = moveSpaceNextRowId;
       potentialMove = moveSpaceNextRow;
       takeOpponentPiece = true;
+      capturedPieceId = moveSpaceId;
       opponentPieceJumped = moveSpace;
     }
   }
@@ -80,13 +93,20 @@ class PieceCl {
       potentialMove2 = moveSpace2;
       takeOpponentPiece2 = false;
     } else if (
-      !moveSpace2.classList.contains(activePlayer) &&
-      moveSpace2.classList.contains(enemyPlayer) &&
-      !moveSpace2NextRow?.classList.contains(activePlayer) &&
-      !moveSpace2NextRow?.classList.contains(enemyPlayer)
+      playerPiecesArray.some((piece) => {
+        return (
+          piece.currentPosition === moveSpace2Id &&
+          piece.assignedPlayer === identifiedPiece.enemyPlayer
+        );
+      }) &&
+      !playerPiecesArray.some(
+        (piece) => piece.currentPosition === moveSpace2NextRowId
+      )
     ) {
+      potentialMove2Id = moveSpace2NextRowId;
       potentialMove2 = moveSpace2NextRow;
       takeOpponentPiece2 = true;
+      capturedPiece2Id = moveSpace2Id;
       opponentPieceJumped2 = moveSpace2;
     }
   }
@@ -173,6 +193,10 @@ class Player1Cl extends PieceCl {
     ///////////////////////////////////////////////////////////////
 
     // 2 Rows up Spaces - JUMPING OPPONENT PIECE
+    moveSpaceNextRowId = `${+idCopy[0] + 2}-${+idCopy[2] - 2}`;
+
+    moveSpace2NextRowId = `${+idCopy[0] + 2}-${+idCopy[2] + 2}`;
+
     moveSpaceNextRow = document.getElementById(
       `${+idCopy[0] + 2}-${+idCopy[2] - 2}`
     );
@@ -203,6 +227,10 @@ class Player2Cl extends PieceCl {
     ///////////////////////////////////////////////////////////////
 
     // 2 Rows up Spaces - JUMPING OPPONENT PIECE
+    moveSpaceNextRowId = `${+idCopy[0] - 2}-${+idCopy[2] - 2}`;
+
+    moveSpace2NextRowId = `${+idCopy[0] - 2}-${+idCopy[2] + 2}`;
+
     moveSpaceNextRow = document.getElementById(
       `${+idCopy[0] - 2}-${+idCopy[2] - 2}`
     );
@@ -353,7 +381,11 @@ const board = document.getElementById("board");
 
 const removeEnemyPiece = function (enemyPlayer) {
   opponentPieceJumped.textContent = "";
-  opponentPieceJumped.classList.remove(enemyPlayer);
+  const capturedPiece = playerPiecesArray.find(
+    (piece) => piece.currentPosition === capturedPieceId
+  );
+  capturedPiece.currentPosition = "";
+  capturedPiece.captured = true;
 
   if (enemyPlayer === "player1") player1Score--;
   if (enemyPlayer === "player2") player2Score--;
@@ -362,7 +394,11 @@ const removeEnemyPiece = function (enemyPlayer) {
 
 const removeEnemyPiece2 = function (enemyPlayer) {
   opponentPieceJumped2.textContent = "";
-  opponentPieceJumped2.classList.remove(enemyPlayer);
+  const capturedPiece2 = playerPiecesArray.find(
+    (piece) => piece.currentPosition === capturedPiece2Id
+  );
+  capturedPiece2.currentPosition = "";
+  capturedPiece2.captured = true;
 
   if (enemyPlayer === "player1") player1Score--;
   if (enemyPlayer === "player2") player2Score--;
