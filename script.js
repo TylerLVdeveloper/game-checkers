@@ -265,7 +265,7 @@ class PieceCl {
     if (potentialMove3) potentialMove3.style.backgroundColor = "red";
     if (potentialMove4) potentialMove4.style.backgroundColor = "red";
 
-    if (takeOpponentPiece) removeEnemyPiece(enemyPlayer);
+    if (takeOpponentPiece) removeEnemyPiece();
 
     // Remove event listeners from all move options
     potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
@@ -302,7 +302,7 @@ class PieceCl {
     if (potentialMove3) potentialMove3.style.backgroundColor = "red";
     if (potentialMove4) potentialMove4.style.backgroundColor = "red";
 
-    if (takeOpponentPiece2) removeEnemyPiece2(enemyPlayer);
+    if (takeOpponentPiece2) removeEnemyPiece2();
 
     // Remove event listeners from all move options
     potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
@@ -336,7 +336,7 @@ class PieceCl {
     if (potentialMove2) potentialMove2.style.backgroundColor = "red";
     if (potentialMove4) potentialMove4.style.backgroundColor = "red";
 
-    if (takeOpponentPiece3) removeEnemyPiece3(enemyPlayer);
+    if (takeOpponentPiece3) removeEnemyPiece3();
 
     // Remove event listeners from all move options
     potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
@@ -370,7 +370,7 @@ class PieceCl {
     if (potentialMove2) potentialMove2.style.backgroundColor = "red";
     if (potentialMove3) potentialMove3.style.backgroundColor = "red";
 
-    if (takeOpponentPiece4) removeEnemyPiece4(enemyPlayer);
+    if (takeOpponentPiece4) removeEnemyPiece4();
 
     // Remove event listeners from all move options
     potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
@@ -625,7 +625,7 @@ const board = document.getElementById("board");
 // Game Play Functions
 /////////////////////////////////////////////////////////
 
-const removeEnemyPiece = function (enemyPlayer) {
+const removeEnemyPiece = function () {
   opponentPieceJumped.textContent = "";
   const capturedPiece = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPieceId
@@ -633,12 +633,14 @@ const removeEnemyPiece = function (enemyPlayer) {
   capturedPiece.currentPosition = "";
   capturedPiece.captured = true;
 
-  if (enemyPlayer === "player1") player1Score--;
-  if (enemyPlayer === "player2") player2Score--;
-  console.log(player1Score, player2Score);
+  if (capturedPiece.assignedPlayer === "player1") player1Score--;
+  if (capturedPiece.assignedPlayer === "player2") player2Score--;
+  console.log(
+    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
+  );
 };
 
-const removeEnemyPiece2 = function (enemyPlayer) {
+const removeEnemyPiece2 = function () {
   opponentPieceJumped2.textContent = "";
   const capturedPiece2 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece2Id
@@ -646,12 +648,14 @@ const removeEnemyPiece2 = function (enemyPlayer) {
   capturedPiece2.currentPosition = "";
   capturedPiece2.captured = true;
 
-  if (enemyPlayer === "player1") player1Score--;
-  if (enemyPlayer === "player2") player2Score--;
-  console.log(player1Score, player2Score);
+  if (capturedPiece2.assignedPlayer === "player1") player1Score--;
+  if (capturedPiece2.assignedPlayer === "player2") player2Score--;
+  console.log(
+    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
+  );
 };
 
-const removeEnemyPiece3 = function (enemyPlayer) {
+const removeEnemyPiece3 = function () {
   opponentPieceJumped3.textContent = "";
   const capturedPiece3 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece3Id
@@ -659,12 +663,14 @@ const removeEnemyPiece3 = function (enemyPlayer) {
   capturedPiece3.currentPosition = "";
   capturedPiece3.captured = true;
 
-  if (enemyPlayer === "player1") player1Score--;
-  if (enemyPlayer === "player2") player2Score--;
-  console.log(player1Score, player2Score);
+  if (capturedPiece3.assignedPlayer === "player1") player1Score--;
+  if (capturedPiece3.assignedPlayer === "player2") player2Score--;
+  console.log(
+    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
+  );
 };
 
-const removeEnemyPiece4 = function (enemyPlayer) {
+const removeEnemyPiece4 = function () {
   opponentPieceJumped4.textContent = "";
   const capturedPiece4 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece4Id
@@ -672,9 +678,11 @@ const removeEnemyPiece4 = function (enemyPlayer) {
   capturedPiece4.currentPosition = "";
   capturedPiece4.captured = true;
 
-  if (enemyPlayer === "player1") player1Score--;
-  if (enemyPlayer === "player2") player2Score--;
-  console.log(player1Score, player2Score);
+  if (capturedPiece4.assignedPlayer === "player1") player1Score--;
+  if (capturedPiece4.assignedPlayer === "player2") player2Score--;
+  console.log(
+    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
+  );
 };
 
 const checkForWinner = () => {
