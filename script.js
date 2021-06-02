@@ -115,6 +115,9 @@ class PieceCl {
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMoveId;
 
+    // Check for King Me after piece has moved
+    identifiedPiece.checkForKingMe();
+
     // Move Piece image to new position
     potentialMove.textContent = identifiedPiece.pieceImg;
 
@@ -144,6 +147,9 @@ class PieceCl {
   moveToSpace2() {
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMove2Id;
+
+    // Check for King Me after piece has moved
+    identifiedPiece.checkForKingMe();
 
     // Move Piece image to new position
     potentialMove2.textContent = identifiedPiece.pieceImg;
@@ -204,6 +210,13 @@ class Player1Cl extends PieceCl {
       `${+idCopy[0] + 2}-${+idCopy[2] + 2}`
     );
   }
+
+  checkForKingMe() {
+    if (this.currentPosition.slice().split("")[0] == 8) {
+      this.kingMe = true;
+      console.log(identifiedPiece);
+    }
+  }
 }
 
 class Player2Cl extends PieceCl {
@@ -237,6 +250,13 @@ class Player2Cl extends PieceCl {
     moveSpace2NextRow = document.getElementById(
       `${+idCopy[0] - 2}-${+idCopy[2] + 2}`
     );
+  }
+
+  checkForKingMe() {
+    if (this.currentPosition.slice().split("")[0] == 1) {
+      this.kingMe = true;
+      console.log(identifiedPiece);
+    }
   }
 }
 
