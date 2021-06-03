@@ -1,24 +1,28 @@
+#board_wrapper {
+  width: 560px;
+  height: 560px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(255, 255, 255);
+}
+
 #board {
-  width: 500px;
-  height: 500px;
-  border: none;
-  box-shadow: 2px 2px 5px rgb(99, 96, 96);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+  grid-template-rows: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+  padding: 0px;
+  box-shadow: 5px 5px 10px grey;
 }
 
 .space {
-  width: 12%;
-  height: 100%;
-  border: 1px solid black;
-  float: left;
   color: white;
   font-weight: bold;
   text-align: center;
   font-size: 24pt;
-}
-
-.row {
-  width: 100%;
-  height: 12%;
-  float: left;
-  position: relative;
+  border: none;
+  padding: 0px;
+  font-size: 30px;
 }

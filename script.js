@@ -570,9 +570,7 @@ boardSpaces.forEach(function (row, rowIndex) {
   row.forEach(function (space) {
     spaceHTML = `<div class="space" id="${rowIndex + 1}-${space}"></div>`;
 
-    document
-      .getElementById(`row${rowIndex + 1}`)
-      .insertAdjacentHTML("beforeend", spaceHTML);
+    document.getElementById("board").insertAdjacentHTML("beforeend", spaceHTML);
     if (
       (space % 2 === 0 && (rowIndex + 1) % 2 !== 0) ||
       (space % 2 !== 0 && (rowIndex + 1) % 2 === 0)
