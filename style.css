@@ -1,6 +1,6 @@
 #board_wrapper {
-  width: 560px;
-  height: 560px;
+  width: 800px;
+  height: 800px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -14,7 +14,7 @@
   grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
   grid-template-rows: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
   padding: 0px;
-  box-shadow: 5px 5px 10px grey;
+  box-shadow: 0px 20px 100px grey;
 }
 
 .space {
@@ -25,4 +25,15 @@
   border: none;
   padding: 0px;
   font-size: 30px;
+  z-index: 1;
+}
+
+.active {
+  background-color: grey;
+}
+
+.pieceImg {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }

@@ -74,6 +74,8 @@ const resetGlobalData = function () {
   moveSpace4NextRowId = null;
 };
 
+const activeSpaceColor = "grey";
+
 ////////////////////////////////////////
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -251,19 +253,18 @@ class PieceCl {
     identifiedPiece.checkForKingMe();
 
     // Move Piece image to new position
-    potentialMove.textContent = identifiedPiece.pieceImg;
+    potentialMove.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Remove piece image from previous location
     pieceSelected.textContent = "";
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove.style.backgroundColor = "red";
+    potentialMove.style.backgroundColor = activeSpaceColor;
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
+    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
+    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
 
     if (takeOpponentPiece) removeEnemyPiece();
 
@@ -288,19 +289,18 @@ class PieceCl {
     identifiedPiece.checkForKingMe();
 
     // Move Piece image to new position
-    potentialMove2.textContent = identifiedPiece.pieceImg;
+    potentialMove2.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Remove piece image from previous location
     pieceSelected.textContent = "";
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove2.style.backgroundColor = "red";
+    potentialMove2.style.backgroundColor = activeSpaceColor;
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
+    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
+    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
 
     if (takeOpponentPiece2) removeEnemyPiece2();
 
@@ -322,19 +322,18 @@ class PieceCl {
     identifiedPiece.currentPosition = potentialMove3Id;
 
     // Move Piece image to new position
-    potentialMove3.textContent = identifiedPiece.pieceImg;
+    potentialMove3.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Remove piece image from previous location
     pieceSelected.textContent = "";
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove3.style.backgroundColor = "red";
+    potentialMove3.style.backgroundColor = activeSpaceColor;
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
+    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
+    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
 
     if (takeOpponentPiece3) removeEnemyPiece3();
 
@@ -356,19 +355,17 @@ class PieceCl {
     identifiedPiece.currentPosition = potentialMove4Id;
 
     // Move Piece image to new position
-    potentialMove4.textContent = identifiedPiece.pieceImg;
-
+    potentialMove4.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
     // Remove piece image from previous location
     pieceSelected.textContent = "";
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove4.style.backgroundColor = "red";
+    potentialMove4.style.backgroundColor = activeSpaceColor;
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
+    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
+    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
 
     if (takeOpponentPiece4) removeEnemyPiece4();
 
@@ -390,7 +387,9 @@ class Player1Cl extends PieceCl {
   constructor(startingPosition, assignedPlayer) {
     super(startingPosition, assignedPlayer);
     this.enemyPlayer = "player2";
-    this.pieceImg = "X";
+    this.kingMe = false;
+    this.pieceImg = '<img src="redPiece.png" class="pieceImg">';
+    this.kingPieceImg = '<img src="kingRedPiece.png" class="pieceImg">';
   }
 
   identifyMoveSpaces(pieceSelected) {
@@ -430,8 +429,7 @@ class Player1Cl extends PieceCl {
   checkForKingMe() {
     if (this.currentPosition.slice().split("")[0] == 8) {
       this.kingMe = true;
-      this.pieceImg = "X-K";
-      console.log(identifiedPiece);
+      this.pieceImg = this.kingPieceImg;
     }
   }
 }
@@ -440,7 +438,8 @@ class Player2Cl extends PieceCl {
   constructor(startingPosition, assignedPlayer) {
     super(startingPosition, assignedPlayer);
     this.enemyPlayer = "player1";
-    this.pieceImg = "O";
+    this.pieceImg = '<img src="blackPiece.png" class="pieceImg">';
+    this.kingPieceImg = '<img src="kingBlackPiece.png" class="pieceImg">';
   }
 
   identifyMoveSpaces(pieceSelected) {
@@ -480,8 +479,7 @@ class Player2Cl extends PieceCl {
   checkForKingMe() {
     if (this.currentPosition.slice().split("")[0] == 1) {
       this.kingMe = true;
-      this.pieceImg = "O-K";
-      console.log(identifiedPiece);
+      this.pieceImg = this.kingPieceImg;
     }
   }
 }
@@ -575,9 +573,6 @@ boardSpaces.forEach(function (row, rowIndex) {
       (space % 2 === 0 && (rowIndex + 1) % 2 !== 0) ||
       (space % 2 !== 0 && (rowIndex + 1) % 2 === 0)
     ) {
-      document.getElementById(
-        `${rowIndex + 1}-${space}`
-      ).style.backgroundColor = "red";
       document
         .getElementById(`${rowIndex + 1}-${space}`)
         .classList.add("active");
@@ -603,9 +598,9 @@ const starterSpaces = document.querySelectorAll(".starter_space");
 starterSpaces.forEach((space) => {
   const idCopy = space.id.slice().split("");
   if (+idCopy[0] >= 6) {
-    space.textContent = playerPiece24.pieceImg;
+    space.insertAdjacentHTML("beforeend", playerPiece24.pieceImg);
   } else if (+idCopy[0] <= 3) {
-    space.textContent = playerPiece1.pieceImg;
+    space.insertAdjacentHTML("beforeend", playerPiece1.pieceImg);
   }
 });
 
@@ -706,7 +701,11 @@ const gamePlayListener = function (event) {
   turnIndicator.textContent = `${activePlayer} Go!`;
 
   // Store piece selected into variable
-  pieceSelected = event.target;
+  if (event.target.classList.contains("pieceImg")) {
+    pieceSelected = event.target.parentElement;
+  } else {
+    pieceSelected = event.target;
+  }
   console.log(pieceSelected);
 
   // Use position selected on board to located piece assigned to that location ID
@@ -726,9 +725,7 @@ const gamePlayListener = function (event) {
   if (moveSpace4) identifiedPiece.calcMoveSpace4();
 
   // If there's atleast one possible move, continue...if not, player can redo selection
-  if (potentialMove || potentialMove2 || potentialMove3 || potentialMove4) {
-    pieceSelected.style.border = "1px solid yellow";
-  } else {
+  if (!potentialMove && !potentialMove2 && !potentialMove3 && !potentialMove4) {
     return;
   }
 
