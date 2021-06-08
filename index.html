@@ -14,10 +14,25 @@
   </head>
 
   <body>
-    <div id="turn_indicator"><h1></h1></div>
+    <div id="main_menu_wrapper">
+      <div id="main_menu">
+        <a href="#" class="menu_option">Exit</a>
+        <a href="#" class="menu_option">New Game</a>
+      </div>
+    </div>
+
     <div id="board_wrapper">
       <div id="board"></div>
     </div>
+
+    <div id="message_window_wrapper">
+      <div id="message_window">
+        <p id="message_a">Double Jump? <sub>(make a move)</sub></p>
+        <p id="message_b">OR</p>
+        <a href="#" id="message_c"><p>End Turn</p></a>
+      </div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>

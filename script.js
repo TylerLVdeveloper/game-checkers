@@ -545,8 +545,6 @@ console.log(playerPiecesArray);
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-const turnIndicator =
-  document.querySelector("#turn_indicator").firstElementChild;
 const playerOneIndicator = "O";
 const playerTwoIndicator = "X";
 let player1Score = 12;
@@ -607,7 +605,6 @@ starterSpaces.forEach((space) => {
 // Set the active player
 let activePlayer = "player1";
 let enemyPlayer = "player2";
-turnIndicator.textContent = `${activePlayer} Go!`;
 
 const board = document.getElementById("board");
 
@@ -679,14 +676,14 @@ const removeEnemyPiece4 = function () {
 };
 
 const checkForWinner = () => {
-  if (player1Score < 1) {
-    turnIndicator.textContent = `Player 2 WINS!!!`;
-  } else if (player2Score < 1) {
-    turnIndicator.textContent = `Player 1 WINS!!!`;
-  } else {
-    // If no winner, CONTINUE GAME
-    gamePlay();
-  }
+  // if (player1Score < 1) {
+  //   turnIndicator.textContent = `Player 2 WINS!!!`;
+  // } else if (player2Score < 1) {
+  //   turnIndicator.textContent = `Player 1 WINS!!!`;
+  // } else {
+  //   // If no winner, CONTINUE GAME
+  gamePlay();
+  // }
 };
 
 // Start Game
@@ -696,9 +693,6 @@ const checkForWinner = () => {
 const gamePlayListener = function (event) {
   // Reset Global Variables
   resetGlobalData();
-
-  // Turn indicator
-  turnIndicator.textContent = `${activePlayer} Go!`;
 
   // Store piece selected into variable
   if (event.target.classList.contains("pieceImg")) {
