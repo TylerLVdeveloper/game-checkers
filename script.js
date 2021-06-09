@@ -76,6 +76,10 @@ const resetGlobalData = function () {
 };
 
 const activeSpaceColor = "grey";
+const doubleJumpDecisionMessage = document.getElementById(
+  "message_window_wrapper"
+);
+const endTurnBtn = document.getElementById("message_c");
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -274,7 +278,7 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
-    console.log(identifiedPiece.kingMe);
+    doubleJumpDecisionMessage.style.display = "none";
 
     doubleJumpLogic();
   }
@@ -307,7 +311,7 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
-    console.log(identifiedPiece.kingMe);
+    doubleJumpDecisionMessage.style.display = "none";
 
     doubleJumpLogic();
   }
@@ -337,7 +341,7 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
-    console.log(identifiedPiece.kingMe);
+    doubleJumpDecisionMessage.style.display = "none";
 
     doubleJumpLogic();
   }
@@ -367,7 +371,7 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
-    console.log(identifiedPiece.kingMe);
+    doubleJumpDecisionMessage.style.display = "none";
 
     doubleJumpLogic();
   }
@@ -719,6 +723,42 @@ const doubleJumpLogic = function () {
     potentialMove2?.addEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.addEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.addEventListener("click", identifiedPiece.moveToSpace4);
+
+    doubleJumpDecisionMessage.style.display = "block";
+    endTurnBtn.addEventListener("click", () => {
+      // Switch active player - NEXT PLAYER'S TURN
+      activePlayer = identifiedPiece.enemyPlayer;
+
+      // Check for winner (does either player have no more game pieces?)
+      checkForWinner();
+
+      doubleJumpDecisionMessage.style.display = "none";
+
+      if (potentialMove && takeOpponentPiece)
+        potentialMove.style.backgroundColor = activeSpaceColor;
+      if (potentialMove2 && takeOpponentPiece2)
+        potentialMove2.style.backgroundColor = activeSpaceColor;
+      if (potentialMove3 && takeOpponentPiece3)
+        potentialMove3.style.backgroundColor = activeSpaceColor;
+      if (potentialMove4 && takeOpponentPiece4)
+        potentialMove4.style.backgroundColor = activeSpaceColor;
+
+      potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
+      potentialMove2?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace2
+      );
+      potentialMove3?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace3
+      );
+      potentialMove4?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace4
+      );
+
+      // endTurnBtn.removeEventListener('click', )
+    });
   }
 };
 
