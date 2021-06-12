@@ -75,11 +75,13 @@ const resetGlobalData = function () {
   moveSpace4NextRowId = null;
 };
 
-const activeSpaceColor = "grey";
 const doubleJumpDecisionMessage = document.getElementById(
   "message_window_wrapper"
 );
+const winnerMessageWrapper = document.getElementById("winner_message_wrapper");
+const winnerMessage = document.getElementById("winner_message");
 const endTurnBtn = document.getElementById("message_c");
+const newGameBtn = document.getElementById("new_game_btn");
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -264,12 +266,12 @@ class PieceCl {
     potentialMove.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    potentialMove.style.backgroundColor = activeSpaceColor;
+    potentialMove.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
-    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
-    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece) removeEnemyPiece();
 
@@ -297,12 +299,12 @@ class PieceCl {
     potentialMove2.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    potentialMove2.style.backgroundColor = activeSpaceColor;
+    potentialMove2.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
-    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
-    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece2) removeEnemyPiece2();
 
@@ -327,12 +329,12 @@ class PieceCl {
     potentialMove3.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    potentialMove3.style.backgroundColor = activeSpaceColor;
+    potentialMove3.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
-    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
-    if (potentialMove4) potentialMove4.style.backgroundColor = activeSpaceColor;
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece3) removeEnemyPiece3();
 
@@ -357,12 +359,12 @@ class PieceCl {
     potentialMove4.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    potentialMove4.style.backgroundColor = activeSpaceColor;
+    potentialMove4.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = activeSpaceColor;
-    if (potentialMove2) potentialMove2.style.backgroundColor = activeSpaceColor;
-    if (potentialMove3) potentialMove3.style.backgroundColor = activeSpaceColor;
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
 
     if (takeOpponentPiece4) removeEnemyPiece4();
 
@@ -674,14 +676,16 @@ const removeEnemyPiece4 = function () {
 };
 
 const checkForWinner = () => {
-  // if (player1Score < 1) {
-  //   turnIndicator.textContent = `Player 2 WINS!!!`;
-  // } else if (player2Score < 1) {
-  //   turnIndicator.textContent = `Player 1 WINS!!!`;
-  // } else {
-  //   // If no winner, CONTINUE GAME
-  gamePlay();
-  // }
+  if (player1Score < 1) {
+    winnerMessage.textContent = `Player 2 WINS!!!`;
+    winnerMessageWrapper.style.display = "block";
+  } else if (player2Score < 1) {
+    winnerMessage.textContent = `Player 1 WINS!!!`;
+    winnerMessageWrapper.style.display = "block";
+  } else {
+    // If no winner, CONTINUE GAME
+    gamePlay();
+  }
 };
 
 const doubleJumpLogic = function () {
@@ -710,13 +714,13 @@ const doubleJumpLogic = function () {
     checkForWinner();
   } else {
     if (potentialMove && takeOpponentPiece)
-      potentialMove.style.backgroundColor = "yellow";
+      potentialMove.classList.add("spaceGlow");
     if (potentialMove2 && takeOpponentPiece2)
-      potentialMove2.style.backgroundColor = "yellow";
+      potentialMove2.classList.add("spaceGlow");
     if (potentialMove3 && takeOpponentPiece3)
-      potentialMove3.style.backgroundColor = "yellow";
+      potentialMove3.classList.add("spaceGlow");
     if (potentialMove4 && takeOpponentPiece4)
-      potentialMove4.style.backgroundColor = "yellow";
+      potentialMove4.classList.add("spaceGlow");
 
     // Event Listeners for moving spaces
     potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
@@ -735,13 +739,13 @@ const doubleJumpLogic = function () {
       doubleJumpDecisionMessage.style.display = "none";
 
       if (potentialMove && takeOpponentPiece)
-        potentialMove.style.backgroundColor = activeSpaceColor;
+        potentialMove.classList.remove("spaceGlow");
       if (potentialMove2 && takeOpponentPiece2)
-        potentialMove2.style.backgroundColor = activeSpaceColor;
+        potentialMove2.classList.remove("spaceGlow");
       if (potentialMove3 && takeOpponentPiece3)
-        potentialMove3.style.backgroundColor = activeSpaceColor;
+        potentialMove3.classList.remove("spaceGlow");
       if (potentialMove4 && takeOpponentPiece4)
-        potentialMove4.style.backgroundColor = activeSpaceColor;
+        potentialMove4.classList.remove("spaceGlow");
 
       potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
       potentialMove2?.removeEventListener(
@@ -800,10 +804,10 @@ const gamePlayListener = function (event) {
     return;
   }
 
-  if (potentialMove) potentialMove.style.backgroundColor = "yellow";
-  if (potentialMove2) potentialMove2.style.backgroundColor = "yellow";
-  if (potentialMove3) potentialMove3.style.backgroundColor = "yellow";
-  if (potentialMove4) potentialMove4.style.backgroundColor = "yellow";
+  if (potentialMove) potentialMove.classList.add("spaceGlow");
+  if (potentialMove2) potentialMove2.classList.add("spaceGlow");
+  if (potentialMove3) potentialMove3.classList.add("spaceGlow");
+  if (potentialMove4) potentialMove4.classList.add("spaceGlow");
 
   // Event Listeners for moving spaces
   potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
@@ -818,5 +822,11 @@ const gamePlayListener = function (event) {
 const gamePlay = function () {
   board.addEventListener("click", gamePlayListener);
 };
+
+const reloadPage = function () {
+  window.location.reload(true);
+};
+
+newGameBtn.addEventListener("click", reloadPage);
 
 gamePlay();
