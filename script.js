@@ -92,7 +92,6 @@ class PieceCl {
     this.startingPosition = startingPosition;
     this.currentPosition = startingPosition;
     this.assignedPlayer = assignedPlayer;
-    this.captured = false;
     this.kingMe = false;
   }
 
@@ -536,13 +535,9 @@ const playerPiecesArray = [
   playerPiece24,
 ];
 
-console.log(playerPiecesArray);
-
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-const playerOneIndicator = "O";
-const playerTwoIndicator = "X";
 let player1Score = 12;
 let player2Score = 12;
 
@@ -612,67 +607,80 @@ const board = document.getElementById("board");
 /////////////////////////////////////////////////////////
 
 const removeEnemyPiece = function () {
+  // Remove enemy piece from space
   opponentPieceJumped.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPieceId
   );
+  // Set position of jumped piece to null
   capturedPiece.currentPosition = "";
-  capturedPiece.captured = true;
+
+  // signifiy that a piece was just jumped (used for double jump decision logic)
   justJumped = true;
 
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece.assignedPlayer === "player1") player1Score--;
   if (capturedPiece.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece2 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped2.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece2 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece2Id
   );
+  // Set position of jumped piece to null
   capturedPiece2.currentPosition = "";
-  capturedPiece2.captured = true;
+
+  // signifiy that a piece was just jumped (used for double jump decision logic)
   justJumped = true;
 
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece2.assignedPlayer === "player1") player1Score--;
   if (capturedPiece2.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece3 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped3.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece3 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece3Id
   );
+
+  // Set position of jumped piece to null
   capturedPiece3.currentPosition = "";
-  capturedPiece3.captured = true;
+
+  // signifiy that a piece was just jumped (used for double jump decision logic)
   justJumped = true;
 
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece3.assignedPlayer === "player1") player1Score--;
   if (capturedPiece3.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece4 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped4.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece4 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece4Id
   );
+  // Set position of jumped piece to null
   capturedPiece4.currentPosition = "";
-  capturedPiece4.captured = true;
+
+  // signifiy that a piece was just jumped (used for double jump decision logic)
   justJumped = true;
 
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece4.assignedPlayer === "player1") player1Score--;
   if (capturedPiece4.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const checkForWinner = () => {
@@ -689,8 +697,10 @@ const checkForWinner = () => {
 };
 
 const doubleJumpLogic = function () {
+  // reset global variables
   resetGlobalData();
 
+  // identify possible move spaces using identified piece's algorithm
   identifiedPiece.identifyMoveSpaces();
 
   // Calculate Move Spaces
@@ -699,7 +709,7 @@ const doubleJumpLogic = function () {
   if (moveSpace3) identifiedPiece.calcMoveSpace3();
   if (moveSpace4) identifiedPiece.calcMoveSpace4();
 
-  // If there's atleast one possible move, continue...if not, player can redo selection
+  // If there are no qualifying move options and/or player did not just jump an opponent piece, move to next player turn
   if (
     (!(potentialMove && takeOpponentPiece) &&
       !(potentialMove2 && takeOpponentPiece2) &&
@@ -710,9 +720,10 @@ const doubleJumpLogic = function () {
     // Switch active player - NEXT PLAYER'S TURN
     activePlayer = identifiedPiece.enemyPlayer;
 
-    // Check for winner (does either player have no more game pieces?)
     checkForWinner();
   } else {
+    // Check for potential moves that would involve jumping an opponent piece
+    // & highlight applicable move space options
     if (potentialMove && takeOpponentPiece)
       potentialMove.classList.add("spaceGlow");
     if (potentialMove2 && takeOpponentPiece2)
@@ -728,16 +739,20 @@ const doubleJumpLogic = function () {
     potentialMove3?.addEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.addEventListener("click", identifiedPiece.moveToSpace4);
 
+    // Display double jump option messaging
     doubleJumpDecisionMessage.style.display = "block";
+
+    // If user decides to end turn instead of double jump (by clicking the "end turn" button)
     endTurnBtn.addEventListener("click", () => {
       // Switch active player - NEXT PLAYER'S TURN
       activePlayer = identifiedPiece.enemyPlayer;
 
-      // Check for winner (does either player have no more game pieces?)
       checkForWinner();
 
+      // Remove display message
       doubleJumpDecisionMessage.style.display = "none";
 
+      // Remove move space option highlights
       if (potentialMove && takeOpponentPiece)
         potentialMove.classList.remove("spaceGlow");
       if (potentialMove2 && takeOpponentPiece2)
@@ -747,6 +762,7 @@ const doubleJumpLogic = function () {
       if (potentialMove4 && takeOpponentPiece4)
         potentialMove4.classList.remove("spaceGlow");
 
+      // Remove move space option event listeners
       potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
       potentialMove2?.removeEventListener(
         "click",
@@ -760,8 +776,6 @@ const doubleJumpLogic = function () {
         "click",
         identifiedPiece.moveToSpace4
       );
-
-      // endTurnBtn.removeEventListener('click', )
     });
   }
 };
@@ -776,6 +790,7 @@ const gamePlayListener = function (event) {
   justJumped = false;
 
   // Store piece selected into variable
+  // If user clicks a piece image, look to it's parent element (board space contining position ID)
   if (event.target.classList.contains("pieceImg")) {
     pieceSelected = event.target.parentElement;
   } else {
@@ -788,45 +803,51 @@ const gamePlayListener = function (event) {
     (piece) => piece.currentPosition === pieceSelected.id
   );
 
-  //Identify move spaces
+  //Identify move spaces (move space algorithm)
   if (identifiedPiece?.assignedPlayer === activePlayer) {
     identifiedPiece.identifyMoveSpaces();
   }
 
-  // Calculate Move Spaces
+  // Calculate Move Spaces (if the space exists, determine if it's available)
   if (moveSpace) identifiedPiece.calcMoveSpace();
   if (moveSpace2) identifiedPiece.calcMoveSpace2();
   if (moveSpace3) identifiedPiece.calcMoveSpace3();
   if (moveSpace4) identifiedPiece.calcMoveSpace4();
 
-  // If there's atleast one possible move, continue...if not, player can redo selection
+  // If there's atleast one possible move, continue...if not, player can redo piece selection
   if (!potentialMove && !potentialMove2 && !potentialMove3 && !potentialMove4) {
     return;
   }
 
+  // Highlight move options on the board
   if (potentialMove) potentialMove.classList.add("spaceGlow");
   if (potentialMove2) potentialMove2.classList.add("spaceGlow");
   if (potentialMove3) potentialMove3.classList.add("spaceGlow");
   if (potentialMove4) potentialMove4.classList.add("spaceGlow");
 
-  // Event Listeners for moving spaces
+  // Event Listeners for moving options
   potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
   potentialMove2?.addEventListener("click", identifiedPiece.moveToSpace2);
   potentialMove3?.addEventListener("click", identifiedPiece.moveToSpace3);
   potentialMove4?.addEventListener("click", identifiedPiece.moveToSpace4);
-  ///////////////////////////////////////////////////////////////////////////////////////
+
+  // Remove event listener that covers the entire board
   board.removeEventListener("click", gamePlayListener);
 };
 
-// Start game
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
+// Start game function expression
 const gamePlay = function () {
   board.addEventListener("click", gamePlayListener);
 };
+// Call game play function immediately
+gamePlay();
 
+// Reload page to allow for game restart (New Game Button Functionality)
 const reloadPage = function () {
   window.location.reload(true);
 };
-
 newGameBtn.addEventListener("click", reloadPage);
-
-gamePlay();
