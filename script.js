@@ -37,6 +37,7 @@ let moveSpaceNextRowId = null;
 let moveSpace2NextRowId = null;
 let moveSpace3NextRowId = null;
 let moveSpace4NextRowId = null;
+let justJumped = false;
 
 const resetGlobalData = function () {
   potentialMove = null;
@@ -74,6 +75,14 @@ const resetGlobalData = function () {
   moveSpace4NextRowId = null;
 };
 
+const doubleJumpDecisionMessage = document.getElementById(
+  "message_window_wrapper"
+);
+const winnerMessageWrapper = document.getElementById("winner_message_wrapper");
+const winnerMessage = document.getElementById("winner_message");
+const endTurnBtn = document.getElementById("message_c");
+const newGameBtn = document.getElementById("new_game_btn");
+
 ////////////////////////////////////////
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -83,12 +92,11 @@ class PieceCl {
     this.startingPosition = startingPosition;
     this.currentPosition = startingPosition;
     this.assignedPlayer = assignedPlayer;
-    this.captured = false;
     this.kingMe = false;
   }
 
   identifyKingMoveSpaces() {
-    idCopy = pieceSelected.id.slice().split("");
+    idCopy = identifiedPiece.currentPosition.slice().split("");
 
     // 1 Row up Spaces - Normal Move
     moveSpaceId = `${+idCopy[0] + 1}-${+idCopy[2] - 1}`;
@@ -244,6 +252,9 @@ class PieceCl {
   }
 
   moveToSpace() {
+    // Remove piece from prev location
+    document.getElementById(`${identifiedPiece.currentPosition}`).textContent =
+      "";
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMoveId;
 
@@ -251,19 +262,15 @@ class PieceCl {
     identifiedPiece.checkForKingMe();
 
     // Move Piece image to new position
-    potentialMove.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
+    potentialMove.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove.style.backgroundColor = "red";
+    potentialMove.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece) removeEnemyPiece();
 
@@ -272,15 +279,15 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
+    doubleJumpDecisionMessage.style.display = "none";
 
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
+    doubleJumpLogic();
   }
 
   moveToSpace2() {
+    // Remove piece from prev location
+    document.getElementById(`${identifiedPiece.currentPosition}`).textContent =
+      "";
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMove2Id;
 
@@ -288,19 +295,15 @@ class PieceCl {
     identifiedPiece.checkForKingMe();
 
     // Move Piece image to new position
-    potentialMove2.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
+    potentialMove2.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove2.style.backgroundColor = "red";
+    potentialMove2.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece2) removeEnemyPiece2();
 
@@ -309,32 +312,28 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
+    doubleJumpDecisionMessage.style.display = "none";
 
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
+    doubleJumpLogic();
   }
 
   moveToSpace3() {
+    // Remove piece from prev location
+    document.getElementById(`${identifiedPiece.currentPosition}`).textContent =
+      "";
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMove3Id;
 
     // Move Piece image to new position
-    potentialMove3.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
+    potentialMove3.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove3.style.backgroundColor = "red";
+    potentialMove3.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove4) potentialMove4.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove4) potentialMove4.classList.remove("spaceGlow");
 
     if (takeOpponentPiece3) removeEnemyPiece3();
 
@@ -343,32 +342,28 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
+    doubleJumpDecisionMessage.style.display = "none";
 
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
+    doubleJumpLogic();
   }
 
   moveToSpace4() {
+    // Remove piece from prev location
+    document.getElementById(`${identifiedPiece.currentPosition}`).textContent =
+      "";
     // Change piece's current position to new position
     identifiedPiece.currentPosition = potentialMove4Id;
 
     // Move Piece image to new position
-    potentialMove4.textContent = identifiedPiece.pieceImg;
-
-    // Remove piece image from previous location
-    pieceSelected.textContent = "";
+    potentialMove4.insertAdjacentHTML("beforeend", identifiedPiece.pieceImg);
 
     // Change styles back to original state
-    pieceSelected.style.border = "1px solid black";
-    potentialMove4.style.backgroundColor = "red";
+    potentialMove4.classList.remove("spaceGlow");
 
     // If there were other moveoptions, change style back to original state
-    if (potentialMove) potentialMove.style.backgroundColor = "red";
-    if (potentialMove2) potentialMove2.style.backgroundColor = "red";
-    if (potentialMove3) potentialMove3.style.backgroundColor = "red";
+    if (potentialMove) potentialMove.classList.remove("spaceGlow");
+    if (potentialMove2) potentialMove2.classList.remove("spaceGlow");
+    if (potentialMove3) potentialMove3.classList.remove("spaceGlow");
 
     if (takeOpponentPiece4) removeEnemyPiece4();
 
@@ -377,12 +372,9 @@ class PieceCl {
     potentialMove2?.removeEventListener("click", identifiedPiece.moveToSpace2);
     potentialMove3?.removeEventListener("click", identifiedPiece.moveToSpace3);
     potentialMove4?.removeEventListener("click", identifiedPiece.moveToSpace4);
+    doubleJumpDecisionMessage.style.display = "none";
 
-    // Switch active player - NEXT PLAYER'S TURN
-    activePlayer = identifiedPiece.enemyPlayer;
-
-    // Check for winner (does either player have no more game pieces?)
-    checkForWinner();
+    doubleJumpLogic();
   }
 }
 
@@ -390,15 +382,17 @@ class Player1Cl extends PieceCl {
   constructor(startingPosition, assignedPlayer) {
     super(startingPosition, assignedPlayer);
     this.enemyPlayer = "player2";
-    this.pieceImg = "X";
+    this.kingMe = false;
+    this.pieceImg = '<img src="redPiece.png" class="pieceImg">';
+    this.kingPieceImg = '<img src="kingRedPiece.png" class="pieceImg">';
   }
 
-  identifyMoveSpaces(pieceSelected) {
+  identifyMoveSpaces() {
     if (this.kingMe) {
       this.identifyKingMoveSpaces();
     } else {
       // Take ID of piece selected and split up into two numbers (Row & Collumn)
-      idCopy = pieceSelected.id.slice().split("");
+      idCopy = identifiedPiece.currentPosition.slice().split("");
 
       // 1 Row up Spaces - Normal Move
       moveSpaceId = `${+idCopy[0] + 1}-${+idCopy[2] - 1}`;
@@ -430,8 +424,7 @@ class Player1Cl extends PieceCl {
   checkForKingMe() {
     if (this.currentPosition.slice().split("")[0] == 8) {
       this.kingMe = true;
-      this.pieceImg = "X-K";
-      console.log(identifiedPiece);
+      this.pieceImg = this.kingPieceImg;
     }
   }
 }
@@ -440,15 +433,16 @@ class Player2Cl extends PieceCl {
   constructor(startingPosition, assignedPlayer) {
     super(startingPosition, assignedPlayer);
     this.enemyPlayer = "player1";
-    this.pieceImg = "O";
+    this.pieceImg = '<img src="blackPiece.png" class="pieceImg">';
+    this.kingPieceImg = '<img src="kingBlackPiece.png" class="pieceImg">';
   }
 
-  identifyMoveSpaces(pieceSelected) {
+  identifyMoveSpaces() {
     if (this.kingMe) {
       this.identifyKingMoveSpaces();
     } else {
       // Take ID of piece selected and split up into two numbers (Row & Collumn)
-      idCopy = pieceSelected.id.slice().split("");
+      idCopy = identifiedPiece.currentPosition.slice().split("");
 
       // 1 Row up Spaces - Normal Move
       moveSpaceId = `${+idCopy[0] - 1}-${+idCopy[2] - 1}`;
@@ -480,8 +474,7 @@ class Player2Cl extends PieceCl {
   checkForKingMe() {
     if (this.currentPosition.slice().split("")[0] == 1) {
       this.kingMe = true;
-      this.pieceImg = "O-K";
-      console.log(identifiedPiece);
+      this.pieceImg = this.kingPieceImg;
     }
   }
 }
@@ -542,15 +535,9 @@ const playerPiecesArray = [
   playerPiece24,
 ];
 
-console.log(playerPiecesArray);
-
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-const turnIndicator =
-  document.querySelector("#turn_indicator").firstElementChild;
-const playerOneIndicator = "O";
-const playerTwoIndicator = "X";
 let player1Score = 12;
 let player2Score = 12;
 
@@ -570,16 +557,11 @@ boardSpaces.forEach(function (row, rowIndex) {
   row.forEach(function (space) {
     spaceHTML = `<div class="space" id="${rowIndex + 1}-${space}"></div>`;
 
-    document
-      .getElementById(`row${rowIndex + 1}`)
-      .insertAdjacentHTML("beforeend", spaceHTML);
+    document.getElementById("board").insertAdjacentHTML("beforeend", spaceHTML);
     if (
       (space % 2 === 0 && (rowIndex + 1) % 2 !== 0) ||
       (space % 2 !== 0 && (rowIndex + 1) % 2 === 0)
     ) {
-      document.getElementById(
-        `${rowIndex + 1}-${space}`
-      ).style.backgroundColor = "red";
       document
         .getElementById(`${rowIndex + 1}-${space}`)
         .classList.add("active");
@@ -605,16 +587,15 @@ const starterSpaces = document.querySelectorAll(".starter_space");
 starterSpaces.forEach((space) => {
   const idCopy = space.id.slice().split("");
   if (+idCopy[0] >= 6) {
-    space.textContent = playerPiece24.pieceImg;
+    space.insertAdjacentHTML("beforeend", playerPiece24.pieceImg);
   } else if (+idCopy[0] <= 3) {
-    space.textContent = playerPiece1.pieceImg;
+    space.insertAdjacentHTML("beforeend", playerPiece1.pieceImg);
   }
 });
 
 // Set the active player
 let activePlayer = "player1";
 let enemyPlayer = "player2";
-turnIndicator.textContent = `${activePlayer} Go!`;
 
 const board = document.getElementById("board");
 
@@ -626,73 +607,176 @@ const board = document.getElementById("board");
 /////////////////////////////////////////////////////////
 
 const removeEnemyPiece = function () {
+  // Remove enemy piece from space
   opponentPieceJumped.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPieceId
   );
+  // Set position of jumped piece to null
   capturedPiece.currentPosition = "";
-  capturedPiece.captured = true;
 
+  // signifiy that a piece was just jumped (used for double jump decision logic)
+  justJumped = true;
+
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece.assignedPlayer === "player1") player1Score--;
   if (capturedPiece.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece2 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped2.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece2 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece2Id
   );
+  // Set position of jumped piece to null
   capturedPiece2.currentPosition = "";
-  capturedPiece2.captured = true;
 
+  // signifiy that a piece was just jumped (used for double jump decision logic)
+  justJumped = true;
+
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece2.assignedPlayer === "player1") player1Score--;
   if (capturedPiece2.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece3 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped3.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece3 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece3Id
   );
-  capturedPiece3.currentPosition = "";
-  capturedPiece3.captured = true;
 
+  // Set position of jumped piece to null
+  capturedPiece3.currentPosition = "";
+
+  // signifiy that a piece was just jumped (used for double jump decision logic)
+  justJumped = true;
+
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece3.assignedPlayer === "player1") player1Score--;
   if (capturedPiece3.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const removeEnemyPiece4 = function () {
+  // Remove enemy piece from space
   opponentPieceJumped4.textContent = "";
+
+  // Locate object of jumped enemy piece
   const capturedPiece4 = playerPiecesArray.find(
     (piece) => piece.currentPosition === capturedPiece4Id
   );
+  // Set position of jumped piece to null
   capturedPiece4.currentPosition = "";
-  capturedPiece4.captured = true;
 
+  // signifiy that a piece was just jumped (used for double jump decision logic)
+  justJumped = true;
+
+  // Deduct jumped piece from enemy player's score
   if (capturedPiece4.assignedPlayer === "player1") player1Score--;
   if (capturedPiece4.assignedPlayer === "player2") player2Score--;
-  console.log(
-    `Player 1 Score: ${player1Score}, Player 2 Score: ${player2Score}`
-  );
 };
 
 const checkForWinner = () => {
   if (player1Score < 1) {
-    turnIndicator.textContent = `Player 2 WINS!!!`;
+    winnerMessage.textContent = `Player 2 WINS!!!`;
+    winnerMessageWrapper.style.display = "block";
   } else if (player2Score < 1) {
-    turnIndicator.textContent = `Player 1 WINS!!!`;
+    winnerMessage.textContent = `Player 1 WINS!!!`;
+    winnerMessageWrapper.style.display = "block";
   } else {
     // If no winner, CONTINUE GAME
     gamePlay();
+  }
+};
+
+const doubleJumpLogic = function () {
+  // reset global variables
+  resetGlobalData();
+
+  // identify possible move spaces using identified piece's algorithm
+  identifiedPiece.identifyMoveSpaces();
+
+  // Calculate Move Spaces
+  if (moveSpace) identifiedPiece.calcMoveSpace();
+  if (moveSpace2) identifiedPiece.calcMoveSpace2();
+  if (moveSpace3) identifiedPiece.calcMoveSpace3();
+  if (moveSpace4) identifiedPiece.calcMoveSpace4();
+
+  // If there are no qualifying move options and/or player did not just jump an opponent piece, move to next player turn
+  if (
+    (!(potentialMove && takeOpponentPiece) &&
+      !(potentialMove2 && takeOpponentPiece2) &&
+      !(potentialMove3 && takeOpponentPiece3) &&
+      !(potentialMove4 && takeOpponentPiece4)) ||
+    !justJumped
+  ) {
+    // Switch active player - NEXT PLAYER'S TURN
+    activePlayer = identifiedPiece.enemyPlayer;
+
+    checkForWinner();
+  } else {
+    // Check for potential moves that would involve jumping an opponent piece
+    // & highlight applicable move space options
+    if (potentialMove && takeOpponentPiece)
+      potentialMove.classList.add("spaceGlow");
+    if (potentialMove2 && takeOpponentPiece2)
+      potentialMove2.classList.add("spaceGlow");
+    if (potentialMove3 && takeOpponentPiece3)
+      potentialMove3.classList.add("spaceGlow");
+    if (potentialMove4 && takeOpponentPiece4)
+      potentialMove4.classList.add("spaceGlow");
+
+    // Event Listeners for moving spaces
+    potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
+    potentialMove2?.addEventListener("click", identifiedPiece.moveToSpace2);
+    potentialMove3?.addEventListener("click", identifiedPiece.moveToSpace3);
+    potentialMove4?.addEventListener("click", identifiedPiece.moveToSpace4);
+
+    // Display double jump option messaging
+    doubleJumpDecisionMessage.style.display = "block";
+
+    // If user decides to end turn instead of double jump (by clicking the "end turn" button)
+    endTurnBtn.addEventListener("click", () => {
+      // Switch active player - NEXT PLAYER'S TURN
+      activePlayer = identifiedPiece.enemyPlayer;
+
+      checkForWinner();
+
+      // Remove display message
+      doubleJumpDecisionMessage.style.display = "none";
+
+      // Remove move space option highlights
+      if (potentialMove && takeOpponentPiece)
+        potentialMove.classList.remove("spaceGlow");
+      if (potentialMove2 && takeOpponentPiece2)
+        potentialMove2.classList.remove("spaceGlow");
+      if (potentialMove3 && takeOpponentPiece3)
+        potentialMove3.classList.remove("spaceGlow");
+      if (potentialMove4 && takeOpponentPiece4)
+        potentialMove4.classList.remove("spaceGlow");
+
+      // Remove move space option event listeners
+      potentialMove?.removeEventListener("click", identifiedPiece.moveToSpace);
+      potentialMove2?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace2
+      );
+      potentialMove3?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace3
+      );
+      potentialMove4?.removeEventListener(
+        "click",
+        identifiedPiece.moveToSpace4
+      );
+    });
   }
 };
 
@@ -703,12 +787,15 @@ const checkForWinner = () => {
 const gamePlayListener = function (event) {
   // Reset Global Variables
   resetGlobalData();
-
-  // Turn indicator
-  turnIndicator.textContent = `${activePlayer} Go!`;
+  justJumped = false;
 
   // Store piece selected into variable
-  pieceSelected = event.target;
+  // If user clicks a piece image, look to it's parent element (board space contining position ID)
+  if (event.target.classList.contains("pieceImg")) {
+    pieceSelected = event.target.parentElement;
+  } else {
+    pieceSelected = event.target;
+  }
   console.log(pieceSelected);
 
   // Use position selected on board to located piece assigned to that location ID
@@ -716,41 +803,51 @@ const gamePlayListener = function (event) {
     (piece) => piece.currentPosition === pieceSelected.id
   );
 
-  //Identify move spaces
+  //Identify move spaces (move space algorithm)
   if (identifiedPiece?.assignedPlayer === activePlayer) {
-    identifiedPiece.identifyMoveSpaces(pieceSelected);
+    identifiedPiece.identifyMoveSpaces();
   }
 
-  // Calculate Move Spaces
+  // Calculate Move Spaces (if the space exists, determine if it's available)
   if (moveSpace) identifiedPiece.calcMoveSpace();
   if (moveSpace2) identifiedPiece.calcMoveSpace2();
   if (moveSpace3) identifiedPiece.calcMoveSpace3();
   if (moveSpace4) identifiedPiece.calcMoveSpace4();
 
-  // If there's atleast one possible move, continue...if not, player can redo selection
-  if (potentialMove || potentialMove2 || potentialMove3 || potentialMove4) {
-    pieceSelected.style.border = "1px solid yellow";
-  } else {
+  // If there's atleast one possible move, continue...if not, player can redo piece selection
+  if (!potentialMove && !potentialMove2 && !potentialMove3 && !potentialMove4) {
     return;
   }
 
-  if (potentialMove) potentialMove.style.backgroundColor = "yellow";
-  if (potentialMove2) potentialMove2.style.backgroundColor = "yellow";
-  if (potentialMove3) potentialMove3.style.backgroundColor = "yellow";
-  if (potentialMove4) potentialMove4.style.backgroundColor = "yellow";
+  // Highlight move options on the board
+  if (potentialMove) potentialMove.classList.add("spaceGlow");
+  if (potentialMove2) potentialMove2.classList.add("spaceGlow");
+  if (potentialMove3) potentialMove3.classList.add("spaceGlow");
+  if (potentialMove4) potentialMove4.classList.add("spaceGlow");
 
-  // Event Listeners for moving spaces
+  // Event Listeners for moving options
   potentialMove?.addEventListener("click", identifiedPiece.moveToSpace);
   potentialMove2?.addEventListener("click", identifiedPiece.moveToSpace2);
   potentialMove3?.addEventListener("click", identifiedPiece.moveToSpace3);
   potentialMove4?.addEventListener("click", identifiedPiece.moveToSpace4);
-  ///////////////////////////////////////////////////////////////////////////////////////
+
+  // Remove event listener that covers the entire board
   board.removeEventListener("click", gamePlayListener);
 };
 
-// Start game
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
+// Start game function expression
 const gamePlay = function () {
   board.addEventListener("click", gamePlayListener);
 };
-
+// Call game play function immediately
 gamePlay();
+
+// Reload page to allow for game restart (New Game Button Functionality)
+const reloadPage = function () {
+  window.location.reload(true);
+};
+newGameBtn.addEventListener("click", reloadPage);

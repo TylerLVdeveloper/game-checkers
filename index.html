@@ -7,24 +7,36 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@300&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@1,800&display=swap"
       rel="stylesheet"
     />
     <title>Checkers</title>
   </head>
 
   <body>
-    <div id="turn_indicator"><h1></h1></div>
-    <div id="board">
-      <div id="row8" class="row"></div>
-      <div id="row7" class="row"></div>
-      <div id="row6" class="row"></div>
-      <div id="row5" class="row"></div>
-      <div id="row4" class="row"></div>
-      <div id="row3" class="row"></div>
-      <div id="row2" class="row"></div>
-      <div id="row1" class="row"></div>
+    <div id="main_menu_wrapper">
+      <div id="main_menu">
+        <a href="#" class="menu_option">Exit</a>
+        <a href="#" class="menu_option" id="new_game_btn">New Game</a>
+      </div>
     </div>
+
+    <div id="board_wrapper">
+      <div id="board"></div>
+    </div>
+
+    <div id="message_window_wrapper">
+      <div id="message_window">
+        <p id="message_a">Double Jump? <sub>(make a move)</sub></p>
+        <p id="message_b">OR</p>
+        <a href="#" id="message_c"><p>End Turn</p></a>
+      </div>
+    </div>
+
+    <div id="winner_message_wrapper">
+      <div id="winner_message"></div>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
