@@ -10,7 +10,7 @@ Readme - Checkers
 
 Example: ID = ”8-1” (8th row from the top, 1st column from the left)
 
-![Alt board diagram](boardDiagram.png)
+![board diagram](boardDiagram.png)
 
 
 5) The “playerPiecesArray” is searched for a piece object with a location ID that matches the “pieceSelected” variable. Once located, it is stored in the “identifiedPiece” variable.
